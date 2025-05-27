@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Community Event Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom styles not directly covered by Bootstrap or specific overrides */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f7f4; /* Light beige from original CSS */
+            color: #383838; /* Dark gray from original CSS */
+        }
+        /* Preserve the linear gradient background for specific h2 elements */
+        .gradient-bg-light {
+            background: linear-gradient(to right, #f8f8f8, #e0e0e0);
+        }
+        .gradient-bg-light-alt {
+            background: linear-gradient(to right, #e8e8e8, #d0d0d0);
+        }
+        /* Adjust header h2 margin for better spacing with Bootstrap defaults */
+        #mainHeader h2 {
+            margin-bottom: 0.5rem; /* Adjust as needed */
+        }
+        /* Custom padding/margin for sections to maintain similar spacing */
+        section {
+            padding: 20px 0; /* Add some vertical padding to sections */
+        }
+        footer {
+            padding: 20px 0;
+            background-color: #f8f9fa; /* Bootstrap light background */
+        }
+    </style>
+</head>
+<body>
+
+    <header id="mainHeader" class="bg-white p-3 shadow-sm mb-4">
+        <div class="container">
+            <h2 class="text-success text-center fw-bold gradient-bg-light py-2 px-3 rounded-3">Our Kurnool Community Portal</h2>
+            <nav class="navbar navbar-expand-md navbar-light bg-light mt-3 rounded">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Festivals</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Local News</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Contact Us</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="row mb-4">
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h3 class="card-title text-success">Ugadi Celebrations</h3>
+                        <p class="card-text text-muted">Join us for the Ugadi festival on April 9th at the Arts Center!</p>
+                        <button class="btn btn-warning cta-button">More Details</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h3 class="card-title text-success">Independence Day Event</h3>
+                        <p class="card-text text-muted">Celebrate India's Independence on August 15th at Gandhi Chowk.</p>
+                        <button class="btn btn-warning cta-button">Register Now</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h3 class="card-title text-success">Kurnool Kite Festival</h3>
+                        <p class="card-text text-muted">Enjoy vibrant kites and cultural performances on Jan 14th!</p>
+                        <button class="btn btn-warning cta-button">Learn More</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-4">
+            <h2 class="text-center fw-bold gradient-bg-light-alt py-2 px-3 rounded-3 mb-4">Kurnool Bulletin</h2>
+            <article class="row news-article text-muted">
+                <div class="col-md-6">
+                    <p>The municipal council meeting will be held on June 5th at 6 PM at the Town Hall. All residents are welcome.</p>
+                    <p>A blood donation camp is being organized near the Old Bus Stand on June 12th. Your participation can save lives.</p>
+                </div>
+                <div class="col-md-6">
+                    <p>The annual mango festival will take place at the Exhibition Grounds starting June 20th.</p>
+                    <p>Local artisans will be showcasing their handicrafts at the Shilparamam next week.</p>
+                </div>
+            </article>
+        </section>
+
+        <section class="mb-4">
+            <h2 class="text-center fw-bold gradient-bg-light-alt py-2 px-3 rounded-3 mb-4">Upcoming Events</h2>
+            <div class="table-responsive shadow-sm rounded">
+                <table class="table table-bordered table-striped table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" class="text-center">Event</th>
+                            <th scope="col" class="text-center">Date</th>
+                            <th scope="col" class="text-center">Time</th>
+                            <th scope="col" class="text-center">Venue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Summer Bazaar</td>
+                            <td>2025-06-25</td>
+                            <td>11:00 AM</td>
+                            <td>Kondareddy Buruju</td>
+                        </tr>
+                        <tr>
+                            <td>Yoga Workshop</td>
+                            <td>2025-07-10</td>
+                            <td>7:00 AM</td>
+                            <td>Rajiv Gandhi Stadium</td>
+                        </tr>
+                        <tr>
+                            <td>Food Festival</td>
+                            <td>2025-07-28</td>
+                            <td>6:00 PM</td>
+                            <td>Near Osmania College</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="mb-5">
+            <h2 class="text-center fw-bold gradient-bg-light-alt py-2 px-3 rounded-3 mb-4">Stay Updated</h2>
+            <form class="p-4 bg-white border rounded shadow-sm">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name:</label>
+                    <input type="text" class="form-control" id="name" placeholder="Your Name">
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" class="form-control" id="email" placeholder="Your Email">
+                </div>
+                <button type="submit" class="btn btn-success w-100">Stay Updated</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="text-center text-muted py-4 bg-light">
+        <p class="mb-0">&copy; 2025 Kurnool Community Portal</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcqMOMom/K+zXcb6Y315/pG5s" crossorigin="anonymous"></script>
+    <script>
+        console.log('Welcome to the Kurnool Community Portal (Bootstrap Edition)!');
+    </script>
+
+</body>
+</html>

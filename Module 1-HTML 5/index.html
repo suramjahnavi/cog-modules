@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Community Event Portal - Kurnool</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom styles for the Local Community Event Portal */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f7f4; /* Light beige background */
+            color: #383838; /* Dark gray text color */
+            margin: 0;
+            padding: 20px; /* Add some overall padding */
+        }
+
+        /* Styles for gradient headings */
+        .gradient-bg-light {
+            background: linear-gradient(to right, #2e7d32, #e0e0e0);
+            -webkit-background-clip: text; /* For Webkit browsers */
+            background-clip: text;
+            color: transparent; /* Makes text transparent to show gradient */
+        }
+        .gradient-bg-light-alt {
+            background: linear-gradient(to right, #2e7d32, #a7d2a9);
+            -webkit-background-clip: text; /* For Webkit browsers */
+            background-clip: text;
+            color: transparent; /* Makes text transparent to show gradient */
+        }
+
+        /* Basic container for content centering and width control */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px; /* Horizontal padding for smaller screens */
+        }
+
+        /* Header specific styling */
+        header {
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        header h2 {
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 2.2em;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 0;
+        }
+
+        /* Navigation styling */
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            gap: 25px; /* Space between nav items */
+            background-color: #f8f8f8;
+            border-radius: 6px;
+            padding: 10px 0;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 600;
+            padding: 8px 15px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            border-radius: 4px;
+        }
+
+        nav ul li a:hover {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        /* Section specific styling */
+        section {
+            background-color: #ffffff;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        section h2 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 25px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        /* Event Cards Grid */
+        .event-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+            gap: 20px;
+        }
+
+        .card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            overflow: hidden; /* Ensures border-radius applies to children */
+            height: 100%; /* Make cards equal height in a grid */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-body {
+            padding: 20px;
+            flex-grow: 1; /* Allows body to expand */
+        }
+
+        .card-title {
+            color: #28a745; /* Bootstrap-like success green */
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            color: #6c757d; /* Bootstrap-like muted text */
+            margin-bottom: 15px;
+        }
+
+        .cta-button {
+            background-color: #ffc107; /* Bootstrap-like warning yellow */
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background-color: #e0a800; /* Darker yellow on hover */
+        }
+
+        /* News article specific styling */
+        .news-article {
+            background-color: #f8f8f8;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+            display: flex; /* Use flex for column layout */
+            gap: 30px; /* Space between columns */
+            flex-wrap: wrap; /* Allow columns to wrap on smaller screens */
+        }
+
+        .news-article div {
+            flex: 1; /* Allow columns to grow and shrink */
+            min-width: 280px; /* Minimum width before wrapping */
+        }
+
+        .news-article p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+            text-align: justify;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            overflow: hidden; /* Ensures rounded corners */
+            background-color: #ffffff;
+        }
+
+        table th, table td {
+            border: 1px solid #e9ecef; /* Light gray border */
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        table thead th {
+            background-color: #f0f2f5;
+            color: #333;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: #fcfcfc; /* Zebra striping */
+        }
+
+        table tbody tr:hover {
+            background-color: #e6f7ff; /* Light blue on hover */
+        }
+
+        /* Form styling */
+        form {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            max-width: 500px; /* Limit form width */
+            margin: 0 auto; /* Center the form */
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        form label {
+            display: block; /* Make labels take full width */
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        form input[type="text"],
+        form input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box; /* Include padding/border in width */
+            font-family: 'Poppins', sans-serif;
+            font-size: 1em;
+        }
+
+        form button[type="submit"] {
+            background-color: #28a745; /* Success green */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        form button[type="submit"]:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+
+        /* Footer styling */
+        footer {
+            text-align: center;
+            color: #777;
+            margin-top: 40px;
+            border-top: 1px solid #eee;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            header, section, footer {
+                padding: 15px;
+            }
+
+            header h2 {
+                font-size: 1.8em;
+            }
+
+            nav ul {
+                flex-direction: column; /* Stack nav items vertically */
+                gap: 10px;
+                padding: 10px;
+            }
+
+            nav ul li a {
+                display: block; /* Make links full width */
+                text-align: center;
+            }
+
+            section h2 {
+                font-size: 1.7em;
+                margin-bottom: 20px;
+            }
+
+            .news-article {
+                flex-direction: column; /* Stack news columns */
+                gap: 15px;
+            }
+
+            table, thead, tbody, th, td, tr {
+                display: block; /* Make table responsive by stacking */
+            }
+
+            thead tr {
+                position: absolute;
+                top: -9999px; /* Hide table headers visually */
+                left: -9999px;
+            }
+
+            table tr {
+                border: 1px solid #eee;
+                margin-bottom: 10px;
+                border-radius: 8px;
+            }
+
+            table td {
+                border: none;
+                border-bottom: 1px solid #eee;
+                position: relative;
+                padding-left: 50%; /* Space for data labels */
+                text-align: right;
+            }
+
+            table td:before {
+                content: attr(data-label); /* Use data-label for content */
+                position: absolute;
+                left: 6px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="mainHeader">
+        <div class="container">
+            <h2 class="gradient-bg-light">Our Kurnool Community Portal</h2>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Festivals</a></li>
+                    <li><a href="#">Local News</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section>
+            <h2>Upcoming Events</h2>
+            <div class="event-cards-grid">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">Ugadi Celebrations</h3>
+                        <p class="card-text">Join us for the Ugadi festival on April 9th at the Arts Center!</p>
+                        <button class="cta-button">More Details</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">Independence Day Event</h3>
+                        <p class="card-text">Celebrate India's Independence on August 15th at Gandhi Chowk.</p>
+                        <button class="cta-button">Register Now</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">Kurnool Kite Festival</h3>
+                        <p class="card-text">Enjoy vibrant kites and cultural performances on Jan 14th!</p>
+                        <button class="cta-button">Learn More</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="gradient-bg-light-alt">Kurnool Bulletin</h2>
+            <article class="news-article">
+                <div>
+                    <p>The municipal council meeting will be held on June 5th at 6 PM at the Town Hall. All residents are welcome.</p>
+                    <p>A blood donation camp is being organized near the Old Bus Stand on June 12th. Your participation can save lives.</p>
+                </div>
+                <div>
+                    <p>The annual mango festival will take place at the Exhibition Grounds starting June 20th.</p>
+                    <p>Local artisans will be showcasing their handicrafts at the Shilparamam next week.</p>
+                </div>
+            </article>
+        </section>
+
+        <section>
+            <h2 class="gradient-bg-light-alt">Upcoming Events Table</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">Event</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Time</th>
+                            <th scope="col">Venue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Event">Summer Bazaar</td>
+                            <td data-label="Date">2025-06-25</td>
+                            <td data-label="Time">11:00 AM</td>
+                            <td data-label="Venue">Kondareddy Buruju</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Event">Yoga Workshop</td>
+                            <td data-label="Date">2025-07-10</td>
+                            <td data-label="Time">7:00 AM</td>
+                            <td data-label="Venue">Rajiv Gandhi Stadium</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Event">Food Festival</td>
+                            <td data-label="Date">2025-07-28</td>
+                            <td data-label="Time">6:00 PM</td>
+                            <td data-label="Venue">Near Osmania College</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="gradient-bg-light-alt">Stay Updated</h2>
+            <form>
+                <div>
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" placeholder="Your Name">
+                </div>
+                <div>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" placeholder="Your Email">
+                </div>
+                <button type="submit">Stay Updated</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Kurnool Community Portal</p>
+    </footer>
+
+</body>
+</html>

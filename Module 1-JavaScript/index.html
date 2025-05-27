@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Community Event Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        /* Task 1: Internal CSS (can be used for page-specific styles, currently empty as all styles are external) */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="color: rgb(60, 66, 239); text-align: center; margin-bottom: 20px;">Welcome to the Community Portal</h1>
+
+        <header id="mainHeader">
+            <h2>Our Kurnool Community Portal</h2>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Festivals</a></li>
+                    <li><a href="#">Local News</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <section class="controls">
+            <label for="category-filter">Filter by Category:</label>
+            <select id="category-filter">
+                <option value="all">All Categories</option>
+                <option value="Festival">Festival</option>
+                <option value="Workshop">Workshop</option>
+                <option value="Sports">Sports</option>
+                <option value="Cultural">Cultural</option>
+            </select>
+
+            <label for="search-event">Search by Name:</label>
+            <input type="text" id="search-event" placeholder="Type event name...">
+        </section>
+
+        <h2>Upcoming Events</h2>
+        <div id="events-container">
+            <div id="loading-spinner"></div>
+        </div>
+
+        <section id="registration-form-section">
+            <h2>Register for an Event</h2>
+            <form id="registration-form">
+                <div>
+                    <label for="reg-name">Your Name:</label>
+                    <input type="text" id="reg-name" name="name" placeholder="Enter your full name" required>
+                    <span class="error-message" id="name-error"></span>
+                </div>
+                <div>
+                    <label for="reg-email">Your Email:</label>
+                    <input type="email" id="reg-email" name="email" placeholder="Enter your email address" required>
+                    <span class="error-message" id="email-error"></span>
+                </div>
+                <div>
+                    <label for="event-select">Select Event:</label>
+                    <select id="event-select" name="eventId" required>
+                        <option value="">-- Select an Event --</option>
+                        </select>
+                    <span class="error-message" id="event-error"></span>
+                </div>
+                <button type="submit">Register Now</button>
+            </form>
+            <div id="registration-message"></div>
+        </section>
+
+        <h2>Community Bulletin</h2>
+        <article class="news-article">
+            <p>The Kurnool Municipal Corporation is launching a new initiative for waste management. Residents are encouraged to segregate waste at source. More details will be shared soon.</p>
+            <p>A free health check-up camp will be organized at the Government General Hospital on June 10th. All citizens are welcome to avail the services.</p>
+            <p>The annual "Kurnool Utsav" cultural festival is scheduled for September. Local artists and performers are invited to register.</p>
+            <p>The district administration has announced new traffic regulations around the Kondareddy Buruju area to ease congestion during peak hours.</p>
+        </article>
+
+        <footer>
+            <p>&copy; 2025 Local Community Event Portal. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <div id="custom-modal-overlay" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <h3 id="modal-title"></h3>
+            <p id="modal-message"></p>
+            <button id="modal-close-btn">OK</button>
+        </div>
+    </div>
+
+    <script>
+        // Task 1: JavaScript Basics & Setup
+        console.log("Welcome to the Community Portal");
+
+        // Custom modal implementation instead of alert()
+        const customModalOverlay = document.getElementById('custom-modal-overlay');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMessage = document.getElementById('modal-message');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+
+        function showCustomModal(title, message) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            customModalOverlay.style.display = 'flex';
+        }
+
+        modalCloseBtn.addEventListener('click', () => {
+            customModalOverlay.style.display = 'none';
+        });
+
+        // Task 1: Notify when page is fully loaded (using custom modal)
+        window.onload = function() {
+            showCustomModal("Page Loaded!", "The Local Community Event Portal is ready!");
+        };
+
+        // Mock API for event data
+        const MOCK_EVENTS_API = '/api/events'; // This is a placeholder. In a real app, it would be a real URL.
+        const MOCK_REGISTRATION_API = '/api/register'; // Placeholder for registration endpoint
+
+        // Task 9: Loading spinner element
+        const loadingSpinner = document.getElementById('loading-spinner');
+
+        // Task 5: Event Class Definition
+        class Event {
+            constructor(id, name, date, location, category, description, totalSeats) {
+                this.id = id;
+                this.name = name;
+                this.date = new Date(date); // Convert date string to Date object
+                this.location = location;
+                this.category = category;
+                this.description = description;
+                this.totalSeats = totalSeats;
+                this.registeredSeats = 0; // Initialize registered seats
+            }
+
+            // Task 5: Method to check availability
+            checkAvailability() {
+                return this.totalSeats - this.registeredSeats > 0;
+            }
+
+            // Task 5: Method to register a user
+            register() {
+                if (this.checkAvailability()) {
+                    this.registeredSeats++;
+                    return true;
+                }
+                return false;
+            }
+
+            // Task 5: Method to cancel registration
+            cancelRegistration() {
+                if (this.registeredSeats > 0) {
+                    this.registeredSeats--;
+                    return true;
+                }
+                return false;
+            }
+
+            // Task 2: Concatenate event info using template literals
+            getEventInfo() {
+                const { name, date, location, category, totalSeats, registeredSeats } = this; // Task 10: Destructuring
+                const seatsLeft = totalSeats - registeredSeats;
+                return `${name} on ${date.toLocaleDateString()} at ${location}. Category: ${category}. Seats Left: ${seatsLeft}`;
+            }
+        }
+
+        // Global array to hold all event objects
+        let allEvents = []; // Task 6: Array to manage events
+
+        // Task 4: Closure to track total registrations for a category
+        function createRegistrationTracker() {
+            const categoryRegistrations = {}; // Private variable
+
+            return {
+                trackRegistration: function(category) {
+                    categoryRegistrations[category] = (categoryRegistrations[category] || 0) + 1;
+                    console.log(`Total registrations for ${category}: ${categoryRegistrations[category]}`);
+                },
+                getCategoryRegistrations: function(category) {
+                    return categoryRegistrations[category] || 0;
+                }
+            };
+        }
+        const registrationTracker = createRegistrationTracker();
+
+        // Task 4: Function to add a new event
+        function addEvent(eventData) {
+            const newEvent = new Event(
+                eventData.id,
+                eventData.name,
+                eventData.date,
+                eventData.location,
+                eventData.category,
+                eventData.description,
+                eventData.totalSeats
+            );
+            allEvents.push(newEvent); // Task 6: Add new events using .push()
+            return newEvent;
+        }
+
+        // Task 4: Function to register a user for an event
+        async function registerUser(eventId, userName, userEmail) {
+            // Task 3: Error Handling with try-catch
+            try {
+                const event = allEvents.find(e => e.id === eventId);
+                if (!event) {
+                    throw new Error("Event not found.");
+                }
+
+                if (!event.checkAvailability()) {
+                    throw new Error("No seats available for this event.");
+                }
+
+                // Simulate API call for registration
+                loadingSpinner.style.display = 'block'; // Show spinner
+                const response = await fetch(MOCK_REGISTRATION_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ eventId, userName, userEmail })
+                });
+                loadingSpinner.style.display = 'none'; // Hide spinner
+
+                if (!response.ok) {
+                    throw new Error(`Registration failed: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                if (result.success) {
+                    event.register(); // Update local event object
+                    registrationTracker.trackRegistration(event.category); // Track registration by category
+                    updateEventCard(event); // Task 7: Update UI
+                    populateEventSelect(); // Update select options
+                    showCustomModal("Success!", `You have successfully registered for ${event.name}!`);
+                    return true;
+                } else {
+                    throw new Error(result.message || "Unknown registration error.");
+                }
+
+            } catch (error) {
+                console.error("Registration Error:", error.message); // Task 13: Log errors
+                showCustomModal("Registration Failed", error.message);
+                return false;
+            }
+        }
+
+        // Task 4: Function to filter events by category (Higher-Order Function)
+        function filterEventsByCategory(events, category, callback = (e) => true) { // Task 10: Default parameter
+            const filtered = events.filter(event => {
+                // Task 3: Use if-else to hide past or full events
+                const isUpcoming = event.date >= new Date();
+                const hasSeats = event.checkAvailability();
+
+                if (!isUpcoming || !hasSeats) {
+                    return false; // Don't display past or full events
+                }
+
+                return (category === 'all' || event.category === category) && callback(event);
+            });
+            return filtered;
+        }
+
+        // Task 7: Function to create and append event cards
+        function createEventCard(event) {
+            const card = document.createElement('div');
+            card.className = 'event-card';
+            card.setAttribute('data-event-id', event.id);
+            card.setAttribute('data-category', event.category);
+
+            const { name, date, location, description, totalSeats, registeredSeats } = event; // Task 10: Destructuring
+
+            const seatsLeft = totalSeats - registeredSeats;
+            const isFull = seatsLeft <= 0;
+            const isPast = date < new Date();
+
+            card.innerHTML = `
+                <h3>${name}</h3>
+                <p>${description}</p>
+                <div class="details">
+                    <strong>Date:</strong> ${date.toLocaleDateString()}<br>
+                    <strong>Location:</strong> ${location}<br>
+                    <strong>Category:</strong> ${event.category}
+                </div>
+                <div class="seats-left ${isFull ? 'full' : ''}">
+                    Seats Left: ${isFull ? 'Full' : seatsLeft}
+                </div>
+                <button class="register-btn" ${isFull || isPast ? 'disabled' : ''}>
+                    ${isPast ? 'Event Ended' : (isFull ? 'Full' : 'Register')}
+                </button>
+            `;
+
+            // Task 8: Event Handling - onclick for "Register" buttons
+            const registerBtn = card.querySelector('.register-btn');
+            if (registerBtn) {
+                registerBtn.addEventListener('click', async () => {
+                    // This will trigger the form to pre-select the event
+                    document.getElementById('event-select').value = event.id;
+                    showCustomModal("Register for Event", `Please fill out the form below to register for "${event.name}".`);
+                    // Scroll to the registration form
+                    document.getElementById('registration-form-section').scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+
+            return card;
+        }
+
+        // Task 7: Update UI when user registers or cancels
+        function updateEventCard(event) {
+            const card = document.querySelector(`.event-card[data-event-id="${event.id}"]`);
+            if (card) {
+                const seatsLeftElement = card.querySelector('.seats-left');
+                const registerBtn = card.querySelector('.register-btn');
+                const seatsLeft = event.totalSeats - event.registeredSeats;
+                const isFull = seatsLeft <= 0;
+
+                seatsLeftElement.textContent = `Seats Left: ${isFull ? 'Full' : seatsLeft}`;
+                seatsLeftElement.classList.toggle('full', isFull);
+                registerBtn.disabled = isFull;
+                registerBtn.textContent = isFull ? 'Full' : 'Register';
+
+                // Task 14: jQuery fadeIn/fadeOut for visual feedback (optional, but requested)
+                $(card).fadeOut(300, function() {
+                    $(this).fadeIn(300);
+                });
+            }
+        }
+
+        // Function to render events based on filters
+        function renderEvents(eventsToDisplay) {
+            const eventsContainer = document.getElementById('events-container');
+            eventsContainer.innerHTML = ''; // Clear previous events
+
+            if (eventsToDisplay.length === 0) {
+                eventsContainer.innerHTML = '<p style="text-align: center; color: #777;">No events found matching your criteria.</p>';
+                return;
+            }
+
+            eventsToDisplay.forEach(event => {
+                eventsContainer.appendChild(createEventCard(event));
+            });
+        }
+
+        // Function to populate the event selection dropdown in the form
+        function populateEventSelect() {
+            const eventSelect = document.getElementById('event-select');
+            eventSelect.innerHTML = '<option value="">-- Select an Event --</option>'; // Reset options
+
+            const upcomingEvents = allEvents.filter(event => event.date >= new Date() && event.checkAvailability());
+
+            upcomingEvents.forEach(event => {
+                const option = document.createElement('option');
+                option.value = event.id;
+                option.textContent = `${event.name} (${event.date.toLocaleDateString()})`;
+                eventSelect.appendChild(option);
+            });
+        }
+
+        // Task 9: Fetch events from a mock API using Async/Await
+        async function fetchEvents() {
+            loadingSpinner.style.display = 'block'; // Show spinner
+            try {
+                // Simulate network delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Mock data
+                const mockData = [
+                    { id: 'e1', name: 'Ugadi Celebrations', date: '2025-04-09', location: 'Kurnool Arts Center', category: 'Festival', description: 'Traditional New Year festivities.', totalSeats: 150 },
+                    { id: 'e2', name: 'Independence Day Event', date: '2025-08-15', location: 'Gandhi Chowk', category: 'Cultural', description: 'Patriotic parade and cultural programs.', totalSeats: 200 },
+                    { id: 'e3', name: 'Summer Bazaar', date: '2025-06-25', location: 'Kondareddy Buruju', category: 'Festival', description: 'Local crafts and food stalls.', totalSeats: 100 },
+                    { id: 'e4', name: 'Yoga Workshop', date: '2025-07-10', location: 'Rajiv Gandhi Stadium', category: 'Sports', description: 'Learn basic yoga poses for well-being.', totalSeats: 50 },
+                    { id: 'e5', name: 'Food Festival', date: '2025-07-28', location: 'Near Osmania College', category: 'Festival', description: 'Taste authentic regional Indian cuisine.', totalSeats: 180 },
+                    { id: 'e6', name: 'Local Music Night', date: '2025-09-01', location: 'Town Park Stage', category: 'Cultural', description: 'Enjoy performances by local bands.', totalSeats: 120 },
+                    { id: 'e7', name: 'Coding Bootcamp', date: '2025-08-20', location: 'Tech Hub Kurnool', category: 'Workshop', description: 'Intensive workshop on web development.', totalSeats: 30 },
+                    { id: 'e8', name: 'Past Event Example', date: '2024-01-01', location: 'Old Hall', category: 'Cultural', description: 'This event is in the past.', totalSeats: 50 },
+                    { id: 'e9', name: 'Full Event Example', date: '2025-10-01', location: 'Community Hall', category: 'Workshop', description: 'This event is full.', totalSeats: 5, registeredSeats: 5 }
+                ];
+
+                allEvents = mockData.map(data => addEvent(data)); // Populate allEvents array
+                renderEvents(allEvents);
+                populateEventSelect(); // Populate the form's event select
+            } catch (error) {
+                console.error("Failed to fetch events:", error); // Task 9: Error handling
+                showCustomModal("Error", "Failed to load events. Please try again later.");
+            } finally {
+                loadingSpinner.style.display = 'none'; // Hide spinner
+            }
+        }
+
+        // Initial fetch of events when the script loads
+        fetchEvents();
+
+        // Task 8: Event Handling - Filter by Category (onchange)
+        const categoryFilter = document.getElementById('category-filter');
+        categoryFilter.addEventListener('change', () => {
+            const selectedCategory = categoryFilter.value;
+            const searchTerm = searchEventInput.value.toLowerCase();
+
+            const filteredAndSearchedEvents = filterEventsByCategory(
+                [...allEvents], // Task 10: Spread operator to clone array
+                selectedCategory,
+                (event) => event.name.toLowerCase().includes(searchTerm)
+            );
+            renderEvents(filteredAndSearchedEvents);
+        });
+
+        // Task 8: Event Handling - Search by Name (keydown)
+        const searchEventInput = document.getElementById('search-event');
+        searchEventInput.addEventListener('keydown', (event) => {
+            // Only filter on Enter key press or when typing
+            if (event.key === 'Enter' || searchEventInput.value.length > 2 || searchEventInput.value.length === 0) {
+                const searchTerm = searchEventInput.value.toLowerCase();
+                const selectedCategory = categoryFilter.value;
+
+                const filteredAndSearchedEvents = filterEventsByCategory(
+                    [...allEvents], // Task 10: Spread operator to clone array
+                    selectedCategory,
+                    (event) => event.name.toLowerCase().includes(searchTerm)
+                );
+                renderEvents(filteredAndSearchedEvents);
+            }
+        });
+
+        // Task 11: Working with Forms - Registration Form
+        const registrationForm = document.getElementById('registration-form');
+        const regNameInput = document.getElementById('reg-name');
+        const regEmailInput = document.getElementById('reg-email');
+        const eventSelectInput = document.getElementById('event-select');
+        const registrationMessageDiv = document.getElementById('registration-message');
+
+        const nameError = document.getElementById('name-error');
+        const emailError = document.getElementById('email-error');
+        const eventError = document.getElementById('event-error');
+
+        registrationForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Task 11: Prevent default form behavior
+
+            // Task 11: Validate inputs
+            let isValid = true;
+            nameError.textContent = '';
+            emailError.textContent = '';
+            eventError.textContent = '';
+
+            const userName = regNameInput.value.trim();
+            const userEmail = regEmailInput.value.trim();
+            const selectedEventId = eventSelectInput.value;
+
+            if (userName.length < 3) {
+                nameError.textContent = 'Name must be at least 3 characters.';
+                isValid = false;
+            }
+            if (!userEmail.includes('@') || !userEmail.includes('.')) {
+                emailError.textContent = 'Please enter a valid email address.';
+                isValid = false;
+            }
+            if (!selectedEventId) {
+                eventError.textContent = 'Please select an event.';
+                isValid = false;
+            }
+
+            if (!isValid) {
+                registrationMessageDiv.innerHTML = '<p style="color: red;">Please correct the errors in the form.</p>';
+                return;
+            }
+
+            // Task 12: Use fetch() to POST user data to a mock API
+            try {
+                registrationMessageDiv.innerHTML = '<p style="color: #007bff;">Registering...</p>';
+                loadingSpinner.style.display = 'block'; // Show spinner
+
+                // Simulate a delayed response
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                const mockResponse = { success: true, message: "Registration successful!" };
+                // In a real application, you would send this to a backend:
+                /*
+                const response = await fetch(MOCK_REGISTRATION_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: userName,
+                        email: userEmail,
+                        eventId: selectedEventId
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+                const result = await response.json();
+                */
+
+                if (mockResponse.success) { // Using mockResponse for demonstration
+                    const registered = await registerUser(selectedEventId, userName, userEmail);
+                    if (registered) {
+                        registrationMessageDiv.innerHTML = '<p style="color: green;">Registration successful! Check your email for confirmation.</p>';
+                        registrationForm.reset(); // Clear form
+                    } else {
+                        registrationMessageDiv.innerHTML = '<p style="color: red;">Registration failed. Please try again.</p>';
+                    }
+                } else {
+                    throw new Error(mockResponse.message || "Mock registration failed.");
+                }
+            } catch (error) {
+                console.error("Form submission error:", error); // Task 13: Log submission steps
+                registrationMessageDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            } finally {
+                loadingSpinner.style.display = 'none'; // Hide spinner
+            }
+        });
+
+        // Task 14: jQuery for simpler DOM tasks (example)
+        // Using jQuery to add a subtle fade effect to the header on load
+        $(document).ready(function() {
+            $('#mainHeader').hide().fadeIn(1000);
+
+            // Example of jQuery click handler (though addEventListener is preferred for new JS)
+            // $('#registerBtn').click(function() { ... });
+        });
+
+        // Task 14: Mention one benefit of moving to frameworks like React or Vue
+        // Benefit: React or Vue provide a component-based architecture, making it easier to build
+        // complex UIs by breaking them down into reusable, self-contained pieces. They also
+        // offer efficient DOM updates and state management, simplifying complex interactions.
+    </script>
+</body>
+</html>
